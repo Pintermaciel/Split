@@ -1,29 +1,45 @@
 import pandas as pd
 import chardet
 
-def detect_encoding(file_path):
-    """Identifica a codificação de um arquivo"""
-    with open(file_path, 'rb') as f:
+# Função que identifica a codificação de um arquivo
+def encoding(x):
+    with open(x, 'rb') as f:
+        # Abre o arquivo em modo binário
         result = chardet.detect(f.read())
-        return result['encoding']
+        encoding = result['encoding']
+    # Retorna a codificação encontrada    
+    return encoding
 
-def format_mascara_plano(mascara):
-    """Adiciona os pontos na mascara de plano"""
-    return f"{mascara[:1]}.{mascara[1:2]}.{mascara[2:3]}.{mascara[3:5]}.{mascara[5:]}" 
+# Ler o arquivo txt
+with open('C:\\Users\\Matheus\\OneDrive\\Área de Trabalho\\plano.txt', 'r', encoding=encoding('C:\\Users\\Matheus\\OneDrive\\Área de Trabalho\\plano.txt')) as f:
+    linhas = f.readlines()
 
-file_path = 'C:\\Users\\Matheus\\OneDrive\\Área de Trabalho\\plano.txt'
-encoding = detect_encoding(file_path)
+# Criar as listas para cada coluna
+cod = []
+mascara_plano = []
+descricao = []
+tipo = []
 
-with open(file_path, 'r', encoding=encoding) as f:
-    lines = f.readlines()
+# Realizar o split em cada linha do arquivo e armazenar nas listas correspondentes
+for linha in linhas:
+    cod.append(linha[:7].strip())
+    mascara_plano.append(linha[7:18].strip())
+    descricao.append(linha[27:67].strip())
+    tipo.append(linha[67:68].strip())
 
-cod = [line[:7].strip() for line in lines]
-mascara_plano = [line[7:18].strip() for line in lines]
-descricao = [line[27:67].strip() for line in lines]
-tipo = [line[67:68].strip() for line in lines]
-
+# Criar o dataframe com as colunas criadas
 df = pd.DataFrame({'cod': cod, 'mascara_plano': mascara_plano, 'descricao': descricao, 'tipo': tipo})
-df['mascara_plano'] = df['mascara_plano'].apply(format_mascara_plano)
 
+# adicionar os pontos nas posições especificadas
+df['mascara_plano'] = [
+    ''.join([
+        s[:1], '.' if len(s) > 1 else '', s[1:2], '.' if len(s) > 2 else '', s[2:3],
+        '.' if len(s) > 3 else '', s[3:5], '.' if len(s) > 5 else '', s[5:]
+    ]) for s in df['mascara_plano']
+]
+
+# exibir o DataFrame resultante
 print(df)
+
+# salvar o arquivo Excel formatado
 df.to_excel('C:\\Users\\Matheus\\OneDrive\\Área de Trabalho\\plano.xlsx')
