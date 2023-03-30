@@ -30,5 +30,15 @@ for linha in linhas:
 # Criar o dataframe com as colunas criadas
 df = pd.DataFrame({'cod': cod, 'mascara_plano': mascara_plano, 'descricao': descricao, 'tipo': tipo})
 
-# Exibir o dataframe
+# adicionar os pontos nas posições especificadas
+df['mascara_plano'] = [
+    ''.join([
+        s[:1], '.' if len(s) > 1 else '', s[1:2], '.' if len(s) > 2 else '', s[2:3],
+        '.' if len(s) > 3 else '', s[3:5], '.' if len(s) > 5 else '', s[5:]
+    ]) for s in df['mascara_plano']
+]
+
+# exibir o DataFrame resultante
 print(df)
+
+df.to_excel('C:\\Users\\Matheus\\OneDrive\\Área de Trabalho\\plano.xlsx')
