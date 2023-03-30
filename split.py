@@ -41,4 +41,5 @@ df['mascara_plano'] = [
 # exibir o DataFrame resultante
 print(df)
 
+# salvar o arquivo Excel formatado
 df.to_excel('C:\\Users\\Matheus\\OneDrive\\Área de Trabalho\\plano.xlsx')
